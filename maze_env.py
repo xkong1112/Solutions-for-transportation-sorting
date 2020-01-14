@@ -2,21 +2,12 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 30 10:12:52 2019
-
 @author: yu
-"""
 
-# coding=GBK
-"""
 Reinforcement learning approach for solving sorting problem.
 Manhattan Distance -1   [reward = -1].
 Manhattan Distance +1   [reward = +1].
-Aim state:              [reward = +100].
 """
-
-#import time as tm
-#import random
-
 class Maze():#给环境一个输入的字符串（state），可以选择动作，返回各个动作的奖励值hn并且给出下一个新的state
     openT = {}
     preNode = {}
@@ -28,12 +19,10 @@ class Maze():#给环境一个输入的字符串（state），可以选择动作�
               6: [3, 7, 9], 7: [4, 6, 8, 10], 8: [5, 7, 11],
               9: [6, 10], 10: [7, 9, 11], 11: [8, 10]
               }
-    def __inif__(self,curString, aimString):
+
+    def __init__(self,curString, aimString):
         self.curString =curString
         self.aimString = aimString
-    
-        
-    
 
     def mhd(self, a, b):
         c = divmod(a, 3)  # 字符串第一位是0
@@ -67,13 +56,14 @@ class Maze():#给环境一个输入的字符串（state），可以选择动作�
         # 先给变量赋值，然后再调用，相当于对临时变量进行运维
         # reward就是曼哈顿距离减少的多少,但是观测的是当前的state，那reward对应的是啥
         # 每走一步都是-1然后hn也mhd距离越大也是越差，整个给他最小化
+        # fxreward就是反向reward的意思，主要的原因是tf只能minimize，那就把这个反向奖励minimize就完事了
         obs=self.curString # s_
-        reward = -self.hn_(self.curString, self.aimString)-self.action()[1]
-        if obs == self.aimString or self.action()[1] > 10000: # count
+        fxreward = self.hn_(self.curString, self.aimString)+self.action()[1]
+        if obs == self.aimString: #or self.action()[1] > 10000: # count
             done  = True
         else:
             done = False
-            return obs,reward,done #s_, hn , done
+            return obs,fxreward,done #s_, hn , done
         
     def action(self): # 所有可能的action以及其对应的reward的集合
         chaJi = []
@@ -103,7 +93,6 @@ def update():
             s, r, done = env.step(a)
             if done:
                 break
-
 if __name__ == '__main__':
     env = Maze()
     env.after(100, update)
