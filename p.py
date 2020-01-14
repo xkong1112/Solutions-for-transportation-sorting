@@ -20,14 +20,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 from main_env import Maze
 
-EP_MAX = 1000
-EP_LEN = 200
+EP_MAX = 1000 # 1000个ep
+EP_LEN = 200 #?一个episode200步
 GAMMA = 0.9
 A_LR = 0.0001 #LR应该是learn rate
 C_LR = 0.0002
-BATCH = 32
-A_UPDATE_STEPS = 20 # 多少步之内可以收敛，目前知道的是20步，目标就是20步以内找到合理的答案，原来的钟摆是10
-C_UPDATE_STEPS = 20 # 莫烦源代码里面写的是AC更新频率是一样的，不知道具体为啥
+BATCH = 32 # 每32步更新一次
+A_UPDATE_STEPS = 1 #?
+# 多少步之内可以收敛，目前知道的是20步，目标就是20步以内找到合理的答案，原来的钟摆是10
+C_UPDATE_STEPS = 1 #?
+# 莫烦源代码里面写的是AC更新频率是一样的，不知道具体为啥
 S_DIM, A_DIM = 1, 1 # action就是随机一个随机数的样子-2到2，立钟摆，所以a-dim是1，s-dim是3，为啥呢？字符串的维度应该是1，state和action都是一个字符串，所以维度都是1
 METHOD = [
     dict(name='kl_pen', kl_target=0.01, lam=0.5),   # KL penalty
@@ -37,7 +39,7 @@ METHOD = [
 
 class PPO(object):
 
-    def __init__(self):
+    def __init__(self):         
         self.sess = tf.Session()
         self.tfs = tf.placeholder(tf.float32, [None, S_DIM], 'state')
 
@@ -46,12 +48,13 @@ class PPO(object):
         with tf.variable_scope('critic'):
             l1 = tf.layers.dense(self.tfs, 100, tf.nn.relu)
             self.v = tf.layers.dense(l1, 1) # 前一个l1是input，1是units也就是神经元的个数（有时候也叫维数）,最后一层输出多少个神经元就代表最终有多少个类别输出啊，然后再做softmax
-            self.tfdc_r = tf.placeholder(tf.float32, [None, 1], 'discounted_r') # tf.placeholder(dtype,shape,name)其中[None, 3]表示列是3，行不定,此函数可以理解为形参，用于定义过程，在执行的时候再赋具体的值
+            self.tfdc_r = tf.placeholder(tf.float32, [None, 1], 'discounted_r') # ？tf.placeholder(dtype,shape,name)其中[None, 3]表示列是3，行不定,此函数可以理解为形参，用于定义过程，在执行的时候再赋具体的值
             self.advantage = self.tfdc_r - self.v
             self.closs = tf.reduce_mean(tf.square(self.advantage))
             self.ctrain_op = tf.train.AdamOptimizer(C_LR).minimize(self.closs)
 
         # actor 从正态分布里面找一个动作
+            # 从build a_net(一个正态分布的网络)
         pi, pi_params = self._build_anet('pi', trainable=True)
         oldpi, oldpi_params = self._build_anet('oldpi', trainable=False)
         with tf.variable_scope('sample_action'):
@@ -153,7 +156,7 @@ for ep in range(EP_MAX):
         ep_r += r
 
         # update ppo
-        if (t+1) % BATCH == 0 or t == EP_LEN-1:
+        if (t+1) % BATCH == 0 or t == EP_LEN-1:# 每一个batch更新一次PPO，也就是32次更新一次, %取模，返回除法的余数，一个ep有300也就更新7次，然后外面再循环1000，也就是更新了7000次
             v_s_ = ppo.get_v(s_)
             discounted_r = []
             for r in buffer_r[::-1]:
