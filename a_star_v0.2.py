@@ -8,9 +8,8 @@ exZero = {0: [1, 3], 1: [0, 2, 4], 2: [1, 5],
           9: [6, 10], 10: [7, 9, 11], 11: [8, 10]
           }
 
-
 def mhd(a, b):
-    c = divmod(a, 3)  # ×Ö·û´®µÚÒ»Î»ÊÇ0
+    c = divmod(a, 3)  # å­—ç¬¦ä¸²ç¬¬ä¸€ä½æ˜¯0
     d = divmod(b, 3)
     g = abs(c[0] - d[0]) + abs(c[1] - d[1])
     return g
@@ -42,10 +41,9 @@ def fn(curString, aimString, d):
     f = e + d
     return f
 
-
-# deepDĞèÒª¼ÇÂ¼×Ö·û´®ºÍÆä¶ÔÓ¦µÄ²½Êı
-# ²é¿´²»Ò»ÑùµÄÁ½Î»Êı²¢·µ»Ø·ÇÁãµÄÄÇÒ»¸ö
-def judgeEx(a, b):  # aºÍbÊÇÁ½¸ö×Ö·û´®£¬Õâ¸ö·½³Ì¸ºÔğ±È½ÏÁ½¸ö×Ö·û´®²¢·µ»Ø²»ÊÇ0µÄÄÇ¸öÔªËØµÄÖµ£¨²»ÊÇÎ»ÖÃ
+# deepDéœ€è¦è®°å½•å­—ç¬¦ä¸²å’Œå…¶å¯¹åº”çš„æ­¥æ•°
+# æŸ¥çœ‹ä¸ä¸€æ ·çš„ä¸¤ä½æ•°å¹¶è¿”å›éé›¶çš„é‚£ä¸€ä¸ª
+def judgeEx(a, b):  # aå’Œbæ˜¯ä¸¤ä¸ªå­—ç¬¦ä¸²ï¼Œè¿™ä¸ªæ–¹ç¨‹è´Ÿè´£æ¯”è¾ƒä¸¤ä¸ªå­—ç¬¦ä¸²å¹¶è¿”å›ä¸æ˜¯0çš„é‚£ä¸ªå…ƒç´ çš„å€¼ï¼ˆä¸æ˜¯ä½ç½®
     for i in range(len(a)):
         if a[i] != b[i]:
             if a[i] != "0":
@@ -55,9 +53,9 @@ def judgeEx(a, b):  # aºÍbÊÇÁ½¸ö×Ö·û´®£¬Õâ¸ö·½³Ì¸ºÔğ±È½ÏÁ½¸ö×Ö·û´®²¢·µ»Ø²»ÊÇ0µÄÄ
 
 
 def aStar(orgString, aimString):
-    # ×Öµä³õÊ¼»¯
+    # å­—å…¸åˆå§‹åŒ–
     deepD[orgString] = 0
-    preNode[orgString] = -1  # ¼ÇÂ¼Ç°Çı½Úµã
+    preNode[orgString] = -1  # è®°å½•å‰é©±èŠ‚ç‚¹
     openT[orgString] = fn(orgString, aimString, deepD[orgString])
     while True:
         curString = min(zip(openT.values(), openT.keys()))[1]
@@ -66,21 +64,20 @@ def aStar(orgString, aimString):
             break
         for zero in whereIsZero(curString):
             chaJi = list(set(exZero[zero]).difference(set(whereIsZero(curString))))
-            if chaJi != []:  # Èç¹û²î¼¯²»Îª¿Õ
-                for digits in chaJi:  # ²î¼¯²»Îª¿Õ£¬Á½¸ö×Ö·û´®½»»»×Ö·ûÉú³ÉĞÂµÄ×Ö·û´®
+            if chaJi != []:  # å¦‚æœå·®é›†ä¸ä¸ºç©º
+                for digits in chaJi:  # å·®é›†ä¸ä¸ºç©ºï¼Œä¸¤ä¸ªå­—ç¬¦ä¸²äº¤æ¢å­—ç¬¦ç”Ÿæˆæ–°çš„å­—ç¬¦ä¸²
                     newString = exc(curString, zero, digits)
                     if preNode.get(newString) == None:
-                        deepD[newString] = deepD[curString] + 1  # ¸üĞÂ²½Êı×Öµä
+                        deepD[newString] = deepD[curString] + 1  # æ›´æ–°æ­¥æ•°å­—å…¸
                         openT[newString] = fn(newString, aimString, deepD[newString])
                         preNode[newString] = curString
     lst_steps = []
     lst_steps.append(curString)
-    while preNode[curString] != -1:  # ´æÈëÂ·¾¶
+    while preNode[curString] != -1:  # å­˜å…¥è·¯å¾„
         curString = preNode[curString]
         lst_steps.append(curString)
     lst_steps.reverse()
     return lst_steps
-
 
 if __name__ == "__main__":
     loopTimes=0
@@ -99,7 +96,7 @@ if __name__ == "__main__":
         collision_point = []
         count = 0
         finalSt = defaultdict(list)
-        for i in range(len(printL) - 1):  # °ÑËùÓĞµÄ×Ö·û´®±éÀúÒ»ÏÂ
+        for i in range(len(printL) - 1):  # æŠŠæ‰€æœ‰çš„å­—ç¬¦ä¸²éå†ä¸€ä¸‹
             listA.append(judgeEx(printL[i], printL[i + 1]))
         collision_point.append(listA[0])
         for i in range(0, len(listA)):
@@ -111,31 +108,30 @@ if __name__ == "__main__":
                 finalSt[count].append(printL[i + 1])
                 collision_point.clear()
                 collision_point.append(listA[i])
-        print("µÚ" + str(loopTimes) + "´Î£º"+"ÓÃÁË"+str(count)+"²½")
-
+        print("ç¬¬" + str(loopTimes) + "æ¬¡ï¼š"+"ç”¨äº†"+str(count)+"æ­¥")
 
 '''
 for k, v in finalSt.items():
-            print("µÚ" + str(k) + "´Î")
+            print("ç¬¬" + str(k) + "æ¬¡")
             for i in range(len(v)):
                 print(v[i][:3])
                 print(v[i][3:6])
                 print(v[i][6:9])
                 print(v[i][9:])
-                print("¡ú")
+                print("â†’")
 '''
 
 
 
 '''for i in range(len(c)):
-        print("µÚ" + str(i)+"²½")
+        print("ç¬¬" + str(i)+"æ­¥")
         print(c[i][:3])
         print(c[i][3:6])
         print(c[i][6:9])
         print(c[i][9:])
-    print("ÓÃÊ±"+str(end-start)+"Ãë")
+    print("ç”¨æ—¶"+str(end-start)+"ç§’")
     keysList=list(openT.keys())
     print(len(keysList))'''
-# 000364105020 13 ¡Ì
-# 500431000260 16 ¡Ì
-# 040250000361 17 ¡Ì
+# 000364105020 13 âˆš
+# 500431000260 16 âˆš
+# 040250000361 17 âˆš
