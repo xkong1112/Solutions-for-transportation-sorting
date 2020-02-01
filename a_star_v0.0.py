@@ -95,7 +95,6 @@ def aStar(orgString, aimString):
     lst_steps.reverse()
     return lst_steps
 
-
 if __name__ == "__main__":
     orgString = "500431000260"
     aimString = "000123456000"
