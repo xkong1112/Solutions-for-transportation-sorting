@@ -128,7 +128,6 @@ if __name__ == "__main__":
             print(v[i][9:])
             print("→")
 
-
     '''for i in range(len(c)):
         print("第" + str(i)+"步")
         print(c[i][:3])
